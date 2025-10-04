@@ -37,6 +37,10 @@
         {
           "name": "keyword.control.mrya",
           "match": "\\b(if|else|while|for|break|continue|return|func|define|class|inherit|this|as|try|catch|end|raise|let|const)\\b"
+        },
+        {
+          "name": "keyword.operator.decorator.mrya",
+          "match": "%"
         }
       ]
     },
@@ -71,11 +75,11 @@
         { "name": "entity.name.function.mrya", "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?=\\()" }
       ]
     },
-    "modules": {
+   "modules": {
       "patterns": [
         {
           "name": "support.module.mrya",
-          "match": "\\b(fs|time|math|string)\\b"
+          "match": "\\b(fs|time|math|string|window|gui)\\b"
         }
       ]
     }

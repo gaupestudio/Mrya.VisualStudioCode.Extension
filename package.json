@@ -2,7 +2,7 @@
   "name": "mrya",
   "displayName": "Mrya",
   "description": "Syntax highlighting and snippets for the Mrya language",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "publisher": "gaupestudio",
   "icon": "icons/mrya.png",
   "repository": {

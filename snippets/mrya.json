@@ -214,5 +214,25 @@
       "}"
     ],
     "description": "Iterate over a list"
+  },
+  "Decorator": {
+    "prefix": "decor",
+    "body": [
+      "%${1:decorator}",
+      "func ${2:name} = define(${3:args}) {",
+      "    ${4:// body}",
+      "}"
+    ],
+    "description": "Apply a decorator to a function or class"
+  },
+  "GUI Window": {
+    "prefix": "guiwin",
+    "body": [
+      "let gui = import(\"package:gui\")",
+      "let win = gui.create_window(\"${1:Title}\", ${2:800}, ${3:600})",
+      "gui.add_button(win, \"${4:Click Me}\", ${5:10}, ${6:10}, ${7:100}, ${8:30}, ${9:on_click})",
+      "gui.start_main_loop()"
+    ],
+    "description": "Create a GUI window with a button"
   }
 }
