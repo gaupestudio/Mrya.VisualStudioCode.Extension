@@ -5,9 +5,6 @@ const path = require('path');
 function activate(context) {
     console.log("Mrya VSCode extension activated!");
 
-    // ---------------------------
-    // COMPLETION PROVIDER
-    // ---------------------------
     const provider = vscode.languages.registerCompletionItemProvider(
         'mrya',
         {
@@ -32,9 +29,7 @@ function activate(context) {
                 // ---------------------------
                 if (insideImport) {
                     const items = [];
-
-                    // Native modules
-                    const nativeModules = ["time", "fs", "string", "math"];
+                    const nativeModules = ["time", "fs", "string", "math", "window"];
                     for (const mod of nativeModules) {
                         const item = new vscode.CompletionItem(mod, vscode.CompletionItemKind.Module);
                         item.detail = "Native Mrya module";
@@ -43,12 +38,10 @@ function activate(context) {
                         items.push(item);
                     }
 
-                    // Files and folders in workspace
                     const workspaceFolders = vscode.workspace.workspaceFolders;
                     if (workspaceFolders) {
                         const folder = workspaceFolders[0].uri.fsPath;
                         const entries = getMryaFilesAndDirs(folder);
-
                         for (const entry of entries) {
                             const item = new vscode.CompletionItem(entry.name, entry.kind);
                             item.detail = entry.isDir ? "Folder" : "File";
@@ -60,6 +53,26 @@ function activate(context) {
                         }
                     }
 
+                    return items;
+                }
+
+                // ---------------------------
+                // 🧠 Detect module prefix (e.g. "window." or "fs.")
+                // ---------------------------
+                const moduleMatch = prefix.match(/\b([a-zA-Z_][a-zA-Z0-9_]*)\.$/);
+                if (moduleMatch) {
+                    const moduleName = moduleMatch[1];
+                    const items = [];
+                    for (const key of Object.keys(builtinDocs)) {
+                        if (key.startsWith(moduleName + ".")) {
+                            const subname = key.split(".")[1];
+                            const item = new vscode.CompletionItem(subname, vscode.CompletionItemKind.Function);
+                            item.insertText = subname + "()";
+                            item.detail = `Member of module '${moduleName}'`;
+                            item.documentation = builtinDocs[key];
+                            items.push(item);
+                        }
+                    }
                     return items;
                 }
 
@@ -91,7 +104,7 @@ function activate(context) {
                 ];
 
                 const builtins = Object.keys(builtinDocs);
-                const modules = ["fs", "time", "math", "string"];
+                const modules = ["fs", "time", "math", "string", "window"];
 
                 const items = [];
 
@@ -105,6 +118,7 @@ function activate(context) {
 
                 // --- Built-in functions ---
                 for (const word of builtins) {
+                    if (["true", "false", "nil"].includes(word)) continue; // skip literals
                     const item = new vscode.CompletionItem(word, vscode.CompletionItemKind.Function);
                     item.insertText = word + "()";
                     item.documentation = builtinDocs[word];
@@ -146,20 +160,23 @@ function activate(context) {
                 return items;
             }
         },
-        // Trigger characters
         '.', '(', '[', '{', ' ', '\t', '"'
     );
 
     // ---------------------------
-    // HOVER PROVIDER
+    // 📝 HOVER PROVIDER
     // ---------------------------
     const hover = vscode.languages.registerHoverProvider('mrya', {
         provideHover(document, position) {
             const range = document.getWordRangeAtPosition(position);
             if (!range) return;
             const word = document.getText(range);
-            if (builtinDocs[word]) {
-                return new vscode.Hover(`**${word}** — ${builtinDocs[word]}`);
+
+            // Support module hover (e.g. window.rect)
+            for (const key of Object.keys(builtinDocs)) {
+                if (key === word || key.endsWith("." + word)) {
+                    return new vscode.Hover(`**${key}** — ${builtinDocs[key]}`);
+                }
             }
         }
     });
@@ -194,7 +211,7 @@ const builtinDocs = {
     // Core
     "output": "Prints a value to the console.\n\nExample: `output(\"Hello\")`",
     "import": "Imports a module or file.\n\nExample: `let t = import(\"time\")`",
-    "request": "Prompts the user for input. Supports type validation and defaults.",
+    "request": "Prompts the user for input.",
     "raise": "Raises a custom exception.\n\nExample: `raise(\"Something went wrong\")`",
     "assert": "Asserts that a value equals expected; raises error otherwise.",
 
@@ -205,20 +222,20 @@ const builtinDocs = {
 
     // File I/O
     "fetch": "Reads the content of a file (creates if missing).",
-    "store": "Writes content to a file, overwriting it.",
+    "store": "Writes content to a file.",
     "append_to": "Appends content to the end of a file.",
 
     // Lists
     "append": "Adds an item to the end of a list.",
     "length": "Returns the number of items in a list or characters in a string.",
-    "list_slice": "Returns a slice of a list from start to end.",
+    "list_slice": "Returns a slice of a list.",
     "get": "Retrieves an element from a list by index.",
     "set": "Sets a value at an index in a list.",
 
     // Maps
     "map_has": "Checks if a map contains a key.",
-    "map_keys": "Returns a list of all keys in a map.",
-    "map_values": "Returns a list of all values in a map.",
+    "map_keys": "Returns all keys in a map.",
+    "map_values": "Returns all values in a map.",
     "map_delete": "Removes a key-value pair from a map.",
     "map_get": "Gets a value from a map by key.",
     "map_set": "Sets a value in a map by key.",
@@ -241,7 +258,7 @@ const builtinDocs = {
     "fs.exists": "Checks if a file or directory exists.",
     "fs.is_file": "Returns true if path is a file.",
     "fs.is_dir": "Returns true if path is a directory.",
-    "fs.list_dir": "Lists the contents of a directory.",
+    "fs.list_dir": "Lists directory contents.",
     "fs.make_dir": "Creates a new directory.",
     "fs.remove_file": "Deletes a file.",
     "fs.remove_dir": "Deletes a directory and its contents.",
@@ -258,6 +275,21 @@ const builtinDocs = {
     "str_utils.endsWith": "Checks if a string ends with a suffix.",
     "str_utils.slice": "Returns a substring between indices.",
     "join": "Joins a list of strings using a separator.",
+
+    // Window module
+    "window.init": "Initializes the window system.",
+    "window.create_display": "Creates a display window with width and height.",
+    "window.update": "Updates the window display and limits FPS.",
+    "window.get_events": "Returns the list of current event objects.",
+    "window.get_event_type": "Returns the type of an event (e.g., QUIT, KEYDOWN).",
+    "window.get_event_key": "Returns the key code for a keyboard event.",
+    "window.get_const": "Gets a constant by name (e.g., 'K_w', 'QUIT').",
+    "window.fill": "Fills the display surface with a solid color.",
+    "window.rect": "Draws a rectangle at (x, y) with size (sx, sy) and color (r, g, b).",
+    "window.circle": "Draws a circle centered at (x, y) with color (r, g, b).",
+    "window.text": "Renders text at (x, y) with font, size, and color.",
+    "window.update_key_states": "Updates the current key state cache.",
+    "window.get_key_state": "Returns true if the specified key is pressed.",
 
     // Built-in literals
     "true": "Boolean literal for truth.",
