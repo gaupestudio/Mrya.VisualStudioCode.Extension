@@ -15,7 +15,21 @@
   "repository": {
     "comments": {
       "patterns": [
-        { "name": "comment.line.double-slash.mrya", "match": "//.*$" }
+        {
+          "name": "comment.line.double-slash.mrya",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.mrya",
+          "begin": "/\\*",
+          "end": "\\*/",
+          "patterns": [
+            {
+              "match": ".",
+              "name": "comment.block.mrya"
+            }
+          ]
+        }
       ]
     },
     "keywords": {
