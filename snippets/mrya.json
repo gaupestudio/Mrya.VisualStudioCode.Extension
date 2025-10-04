@@ -1,0 +1,218 @@
+{
+  "Variable Declaration": {
+    "prefix": "let",
+    "body": [
+      "let ${1:name} = ${2:value}"
+    ],
+    "description": "Declare a variable"
+  },
+  "Constant Declaration": {
+    "prefix": "const",
+    "body": [
+      "let const ${1:NAME} = ${2:value}"
+    ],
+    "description": "Declare an immutable constant"
+  },
+  "Typed Variable": {
+    "prefix": "letas",
+    "body": [
+      "let ${1:name} as ${2:type} = ${3:value}"
+    ],
+    "description": "Variable with type annotation"
+  },
+  "Output": {
+    "prefix": "out",
+    "body": [
+      "output(${1:value})"
+    ],
+    "description": "Output to console"
+  },
+  "Import": {
+    "prefix": "imp",
+    "body": [
+      "let ${1:mod} = import(\"${2:module}\")"
+    ],
+    "description": "Import a module or file"
+  },
+  "If Statement": {
+    "prefix": "if",
+    "body": [
+      "if (${1:condition}) {",
+      "    ${2:// code}",
+      "}"
+    ],
+    "description": "Basic if statement"
+  },
+  "If-Else Statement": {
+    "prefix": "ifelse",
+    "body": [
+      "if (${1:condition}) {",
+      "    ${2:// code}",
+      "} else {",
+      "    ${3:// else code}",
+      "}"
+    ],
+    "description": "If-Else block"
+  },
+  "Else If": {
+    "prefix": "elif",
+    "body": [
+      "else if (${1:condition}) {",
+      "    ${2:// code}",
+      "}"
+    ],
+    "description": "Else-if block"
+  },
+  "While Loop": {
+    "prefix": "while",
+    "body": [
+      "while (${1:condition}) {",
+      "    ${2:// code}",
+      "}"
+    ],
+    "description": "While loop"
+  },
+  "For Loop": {
+    "prefix": "for",
+    "body": [
+      "for (${1:item} in ${2:list}) {",
+      "    ${3:// code}",
+      "}"
+    ],
+    "description": "For-each loop"
+  },
+  "Break": {
+    "prefix": "break",
+    "body": ["break"],
+    "description": "Exit current loop"
+  },
+  "Continue": {
+    "prefix": "continue",
+    "body": ["continue"],
+    "description": "Skip current loop iteration"
+  },
+
+  "Function Definition": {
+    "prefix": "func",
+    "body": [
+      "func ${1:name} = define(${2:args}) {",
+      "    ${3:// body}",
+      "}"
+    ],
+    "description": "Define a new function"
+  },
+  "Return": {
+    "prefix": "ret",
+    "body": ["return ${1:value}"],
+    "description": "Return a value from a function"
+  },
+  "Class Definition": {
+    "prefix": "class",
+    "body": [
+      "class ${1:ClassName} {",
+      "    func _start_ = define(${2:args}) {",
+      "        ${3:// constructor body}",
+      "    }",
+      "",
+      "    func ${4:method} = define(${5:args}) {",
+      "        ${6:// method body}",
+      "    }",
+      "}"
+    ],
+    "description": "Define a new class"
+  },
+  "Class Inheritance": {
+    "prefix": "classi",
+    "body": [
+      "class ${1:Child} < ${2:Parent} {",
+      "    func _start_ = define(${3:args}) {",
+      "        inherit._start_(${4:args})",
+      "        ${5:// subclass init code}",
+      "    }",
+      "}"
+    ],
+    "description": "Define a class inheriting from another"
+  },
+  "This Keyword": {
+    "prefix": "this",
+    "body": ["this.${1:property}"],
+    "description": "Access instance variable or method"
+  },
+  "Try-Catch": {
+    "prefix": "try",
+    "body": [
+      "try {",
+      "    ${1:// risky code}",
+      "} catch ${2:ErrorType} {",
+      "    ${3:// handle error}",
+      "} end {",
+      "    ${4:// always executes}",
+      "}"
+    ],
+    "description": "Try-Catch-End block for error handling"
+  },
+  "Assert": {
+    "prefix": "assert",
+    "body": [
+      "assert(${1:value}, ${2:expected})"
+    ],
+    "description": "Assert equality"
+  },
+  "Raise": {
+    "prefix": "raise",
+    "body": [
+      "raise(${1:\"Error message\"})"
+    ],
+    "description": "Raise a custom exception"
+  },
+  "Import FS": {
+    "prefix": "impfs",
+    "body": ["let fs = import(\"fs\")"],
+    "description": "Import the file system module"
+  },
+  "Import Time": {
+    "prefix": "imptime",
+    "body": ["let time = import(\"time\")"],
+    "description": "Import the time module"
+  },
+  "Import Math": {
+    "prefix": "impmath",
+    "body": ["let math = import(\"math\")"],
+    "description": "Import the math module"
+  },
+  "Import String": {
+    "prefix": "impstr",
+    "body": ["let str_utils = import(\"string\")"],
+    "description": "Import the string utility module"
+  },
+  "Fetch File": {
+    "prefix": "fetch",
+    "body": ["let ${1:content} = fetch(\"${2:path}\")"],
+    "description": "Read file contents"
+  },
+  "Store File": {
+    "prefix": "store",
+    "body": ["store(\"${1:path}\", ${2:content})"],
+    "description": "Write content to a file"
+  },
+  "Append To File": {
+    "prefix": "appendto",
+    "body": ["append_to(\"${1:path}\", ${2:content})"],
+    "description": "Append content to file"
+  },
+  "List Append": {
+    "prefix": "append",
+    "body": ["append(${1:list}, ${2:value})"],
+    "description": "Add value to a list"
+  },
+  "For List Loop": {
+    "prefix": "forlist",
+    "body": [
+      "let ${1:items} = [${2:values}]",
+      "for (${3:item} in ${1:items}) {",
+      "    ${4:// code}",
+      "}"
+    ],
+    "description": "Iterate over a list"
+  }
+}
